@@ -1,4 +1,4 @@
-// g++ rho_ihor.cpp -lgmpxx -lgmp
+// g++ rho.cpp -lgmpxx -lgmp
 #include <iostream>
 #include <map>
 #include <string>
@@ -151,8 +151,5 @@ void rhoTest()
 int main()
 {
 	rhoTest();
-	// mpz_class n("20949817213646815376149365084946152659");
-	// mpz_class result = PollardRho(n);
-	// std::cout << result << std::endl;
 	return 0;
 }
