@@ -4,6 +4,7 @@
 #include <string>
 #include <random>
 #include <chrono>
+#include <unistd.h>
 #include <gmpxx.h>
 
 
@@ -132,8 +133,14 @@ void rhoTest()
  	std::string number;
   	getline(std::cin, number);
   	mpz_class n(number);
-
+	
+	auto start = std::chrono::steady_clock::now();
 	std::map<mpz_class,int> arr = runPollardRho(n);
+	auto end = std::chrono::steady_clock::now();
+	std::cout 	<< "Elapsed time "
+				<< std::chrono::duration_cast< std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds"
+				<< std::endl;
 
 	bool firstEl = true;
 	for(auto item: arr)
