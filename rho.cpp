@@ -1,4 +1,3 @@
-// g++ rho.cpp -lgmpxx -lgmp
 #include <iostream>
 #include <map>
 #include <string>
