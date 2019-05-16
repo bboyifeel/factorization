@@ -84,7 +84,6 @@ std::map<mpz_class,int> runPollardRho(mpz_class _n)
 {
 	std::map<mpz_class,int>	factor;
 	mpz_class				result(1);
-	mpz_class				tmp;
 
 	const int 	c_reps = 25;
 	
@@ -116,7 +115,7 @@ std::map<mpz_class,int> runPollardRho(mpz_class _n)
 }
 
 
-void rhoTest()
+void testPollardRho()
 {
 	/*
 		Test number:
@@ -154,8 +153,50 @@ void rhoTest()
 }
 
 
+// function for testing (milisecs)
+void testPollardRhoFullTiming(mpz_class n)
+{
+	auto start = std::chrono::steady_clock::now();
+	std::map<mpz_class,int> arr = runPollardRho(n);
+	auto end = std::chrono::steady_clock::now();
+	std::cout 	<< "Elapsed time "
+				<< std::chrono::duration_cast< std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds"
+				<< std::endl;
+
+	// log infor, you can delete if you want
+	bool firstEl = true;
+	for(auto item: arr)
+	{
+		if(firstEl)		firstEl = false;
+		else			std::cout << " x ";
+
+		std::cout << item.first;
+		if (item.second > 1)
+			std::cout << "^" << item.second << "";
+	}
+}
+
+
+void testPollardRhoFirstTiming(mpz_class n)
+{
+	auto start = std::chrono::steady_clock::now();
+	mpz_class firstFactor = PollardRho(n);
+	auto end = std::chrono::steady_clock::now();
+	std::cout 	<< "Elapsed time "
+				<< std::chrono::duration_cast< std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds"
+				<< std::endl;
+	std::cout << firstFactor << std::endl;
+}
+
+
+
 int main()
 {
-	rhoTest();
+	// Examples
+	mpz_class n("44343535354351600000003434353");
+	testPollardRhoFirstTiming(n);
+	testPollardRhoFullTiming(n);
 	return 0;
 }

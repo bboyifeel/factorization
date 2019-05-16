@@ -9,7 +9,15 @@ Sieve::Sieve(int _N)
 	if (_N >= MAX_SIZE)
 		_N = MAX_SIZE - 1;
 	
-	manipulated(_N);
+	N = _N;
+	manipulated(N);
+}
+
+
+Sieve& Sieve::operator=(Sieve&& rhs)
+{
+	N = rhs.N;
+	prime.swap(rhs.prime);
 }
 
 
