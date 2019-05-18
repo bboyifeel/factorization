@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <vector>
 #include <string>
 #include <random>
 #include <chrono>
@@ -58,7 +59,7 @@ mpz_class PollardRho(mpz_class _n)
 	}
 
 	mpz_class x = generateGMPRandomNumber(_n);
-	mpz_class y = generateGMPRandomNumber(_n);
+	mpz_class y = f(x,_n);
 	mpz_class distance;
 
 	do
@@ -100,16 +101,48 @@ std::map<mpz_class,int> runPollardRho(mpz_class _n)
 		}
 
 		result = PollardRho(_n);
-		while(!mpz_probab_prime_p(result.get_mpz_t(), c_reps))
-			result = PollardRho(_n);
-		
 		_n = _n / result;
-
 		if(factor.find(result) != factor.end())
 			factor[result]++;
 		else
 			factor[result] = 1;
 	}
+
+
+	bool arePrime = true;
+	do
+	{
+		arePrime = true;
+		std::vector<mpz_class>	toDelete;
+		mpz_class secondResult(1);
+		
+		for(auto item: factor)
+		{
+			if(!mpz_probab_prime_p(item.first.get_mpz_t(), c_reps))
+			{
+				arePrime		= false;
+				result 			= PollardRho(item.first);
+				secondResult	= item.first / result;
+				
+				if(factor.find(result) != factor.end())
+					factor[result] += item.second;
+				else
+					factor[result] = item.second;
+
+				if(factor.find(secondResult) != factor.end())
+					factor[secondResult] += item.second;
+				else
+					factor[secondResult] = item.second;
+
+				toDelete.push_back(item.first);
+			}
+		}
+		for (auto item: toDelete)
+		{
+			factor.erase(item);
+		}
+	} while(!arePrime);
+
 
 	return factor;
 }
@@ -195,7 +228,7 @@ void testPollardRhoFirstTiming(mpz_class n)
 int main()
 {
 	// Examples
-	mpz_class n("44343535354351600000003434353");
+	mpz_class n("44343535354351600000003434353876698756435645");
 	testPollardRhoFirstTiming(n);
 	testPollardRhoFullTiming(n);
 	return 0;
